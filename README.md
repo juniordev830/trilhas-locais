@@ -1,48 +1,27 @@
-# Trilhas Locais
+# Trilhas Locais — Flutter MVP
 
-> Status: concepção. Este repositório contém apenas o escopo inicial; ainda não há aplicação executável ou funcionalidades implementadas.
+Aplicativo de catálogo manual de trilhas em **Dart + Flutter**, sem uso automático da localização.
 
-## Ideia
+## Entregue
+- Cadastro de percurso (nome, distância, dificuldade e observações).
+- Filtro por distância máxima e dificuldade.
+- Marcar/desmarcar favoritos e visualizar somente os favoritos.
+- Regras isoladas e testes; filtro de 5 km exclui trilhas mais longas.
 
-Catalogar percursos de caminhada com distância, dificuldade e observações.
+## Executar
+Requer Flutter estável com Dart 3.3+:
+```bash
+flutter pub get
+flutter run -d chrome
+```
+Também pode ser executado nos dispositivos para os quais você instalar a plataforma Flutter correspondente.
 
-## Primeira versão planejada
+## Validar
+```bash
+flutter analyze
+flutter test
+flutter build web
+```
 
-- [ ] Cadastrar percurso manualmente.
-- [ ] Filtrar por distância e dificuldade.
-- [ ] Salvar lista de percursos favoritos.
-
-## Modelo inicial
-
-Percurso e favorito.
-
-## Regras e limites
-
-Não coletar localização automaticamente; dados iniciais serão demonstrativos.
-
-Escopo mantido pequeno: sem pagamentos, integrações externas, infraestrutura de produção ou uso de dados pessoais reais nesta etapa.
-
-## Tecnologia proposta
-
-Dart + Flutter.
-
-A escolha é uma proposta para a futura implementação; nenhuma dependência foi instalada e a tecnologia ainda não foi implementada.
-
-## Critério de conclusão do primeiro incremento
-
-Um filtro de até 5 km deve excluir percursos acima dessa distância.
-
-## Próximos passos
-
-1. Revisar este escopo antes de começar a implementação.
-2. Preparar o ambiente mínimo da tecnologia escolhida.
-3. Implementar um fluxo completo e validar o critério acima.
-4. Documentar a execução e acrescentar exemplos demonstrativos.
-
-## Possíveis evoluções
-
-Depois de validar o fluxo principal, avaliar persistência, acessibilidade e uma interface mais completa conforme a plataforma. Evoluções não fazem parte da entrega atual.
-
-## Como executar
-
-Ainda não há comandos de execução. Eles serão adicionados quando existir uma primeira versão funcional.
+## Limites
+Os dados ficam apenas em memória durante a sessão: não há conta, persistência, mapas ou GPS. Recomendado preparar armazenamento local e uma versão mobile numa próxima etapa.
