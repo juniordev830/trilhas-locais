@@ -18,4 +18,6 @@ jobs:
       - run: dart pub get
       - run: dart analyze --fatal-infos
       - run: dart run test/catalog_test.dart
+      - run: dart run test/pace_test.dart
+      - run: dart run bin/trilhas.dart examples/trilhas.json --minutos=90 --ritmo=4
       - run: dart run bin/trilhas.dart examples/trilhas.json --max=5 --favoritas
