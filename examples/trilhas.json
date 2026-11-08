@@ -1,0 +1,28 @@
+{
+  "trilhas": [
+    {
+      "id": "serra-demo",
+      "nome": "Percurso da serra (ficticio)",
+      "distancia_km": 7.4,
+      "dificuldade": "moderada",
+      "observacoes": "Exemplo didatico; nao usar como rota real."
+    },
+    {
+      "id": "parque-demo",
+      "nome": "Caminhada no parque (ficticia)",
+      "distancia_km": 3.2,
+      "dificuldade": "facil",
+      "observacoes": "Distancia ilustrativa."
+    },
+    {
+      "id": "trilha-demo",
+      "nome": "Trilha curta (ficticia)",
+      "distancia_km": 5,
+      "dificuldade": "facil",
+      "observacoes": "Nao sao fornecidas coordenadas."
+    }
+  ],
+  "favoritas": [
+    "parque-demo"
+  ]
+}
