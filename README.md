@@ -28,3 +28,16 @@ O arquivo `examples/trilhas.json` contém **percursos fictícios** sem latitude,
 ## Escopo atual
 
 É um catálogo de domínio com CLI e testes, **ainda sem Flutter, mapa ou persistência de favoritos**. Não monitora a posição do usuário. Dados reais, mapas offline, interface acessível e salvamento local são evoluções futuras.
+
+
+## Planejador de tempo de caminhada
+
+É possível combinar limite de tempo e ritmo médio estimado, além dos filtros existentes:
+
+```bash
+dart run test/pace_test.dart
+dart run bin/trilhas.dart examples/trilhas.json --minutos=90 --ritmo=4
+dart run bin/trilhas.dart examples/trilhas.json --minutos=90 --ritmo=5 --dificuldade=facil --favoritas
+```
+
+O planejador calcula `ceil(distância_km / ritmo_km_h × 60)` minutos. Apenas percursos que cabem no tempo informado aparecem no resultado. O ritmo deve estar entre 1 e 12 km/h e o limite entre 1 e 720 minutos. As estimativas **não consideram elevação, terreno, clima, descanso, trânsito ou segurança**. Não são rotas reais nem orientações de navegação.
