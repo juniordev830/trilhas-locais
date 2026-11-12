@@ -1,6 +1,6 @@
 # Escopo técnico de primeira entrega — Trilhas Locais
 
-**Estado confirmado:** repositório conceitual com `README.md`; sem Flutter/Dart implementados.
+**Estado da branch de desenvolvimento:** núcleo Dart, CLI e testes implementados, com catálogo JSON manual, filtros, favoritos e exportação para novo arquivo. A branch principal ainda pode conter apenas a documentação até o PR ser aprovado. Flutter e geolocalização não estão implementados.
 
 ## Modelo de percurso sugerido
 
@@ -21,3 +21,14 @@ Não implementar coleta automática de GPS no primeiro ciclo. Evitar publicar lo
 ## Sequência de trabalho
 
 Criar funções puras de modelo e filtro, testes Dart, CLI de demonstração e só depois interface Flutter. Registrar comandos reais de execução no README quando surgirem.
+
+## Entregas do MVP na branch
+
+- `lib/trails.dart`: modelo, validações, filtros, estado imutável e favoritos.
+- `lib/pace.dart`: cálculo **estimado** de tempo de caminhada, sem considerar terreno.
+- `lib/storage.dart`: leitura validada de JSON e exportação para arquivo novo, sem sobrescrever o anterior.
+- `bin/trilhas.dart`: CLI para consultar, favoritar/desfavoritar e exportar catálogo local.
+- `test/*.dart`: validação por filtros, casos de erro, arquivos existentes e persistência.
+- `.github/workflows/ci.yml`: análise estática e testes Dart em PRs.
+
+A interface Flutter, dados geográficos reais, navegação e serviços externos **não estão incluídos**. Os exemplos são fictícios.

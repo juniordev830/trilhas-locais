@@ -1,0 +1,24 @@
+name: Dart catalog validation
+
+on:
+  push:
+    branches:
+      - main
+      - "feat/**"
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - run: dart pub get
+      - run: dart analyze --fatal-infos
+      - run: dart run test/catalog_test.dart
+      - run: dart run test/pace_test.dart
+      - run: dart run test/storage_test.dart
+      - run: dart run bin/trilhas.dart examples/trilhas.json --minutos=90 --ritmo=4
+      - run: dart run bin/trilhas.dart examples/trilhas.json --max=5 --favoritas
