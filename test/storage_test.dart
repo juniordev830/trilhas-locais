@@ -86,7 +86,7 @@ void main() {
     rejects(() => TrailCatalogStorage.load(invalid));
     invalid.writeAsStringSync('invalido');
     rejects(() => TrailCatalogStorage.load(invalid));
-    invalid.writeAsStringSync(' ' * (TrailCatalogStorage.maxInputBytes + 1));
+    invalid.writeAsStringSync(List.filled(TrailCatalogStorage.maxInputBytes + 1, ' ').join());
     rejects(() => TrailCatalogStorage.load(invalid));
 
     final cliSaved = File('${directory.path}/via-cli.json');
