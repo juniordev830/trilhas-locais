@@ -1,42 +1,35 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:trilhas_locais/trails.dart';
+
 import 'package:trilhas_locais/pace.dart';
+import 'package:trilhas_locais/storage.dart';
+import 'package:trilhas_locais/trails.dart';
 
 void main(List<String> args) {
   try {
-    if (args.isEmpty || args.length > 6) {
+    if (args.isEmpty) {
       throw FormatException(
-        'Uso: dart run bin/trilhas.dart examples/trilhas.json '
-        '[--max=5] [--dificuldade=facil] [--favoritas] [--minutos=90] [--ritmo=4]'
+        'Uso: dart run bin/trilhas.dart catalogo.json '
+        '[--max=5] [--dificuldade=facil] [--favoritas] '
+        '[--minutos=90] [--ritmo=4] '
+        '[--favoritar=id | --desfavoritar=id] [--salvar=novo.json]'
       );
     }
-    final decoded = jsonDecode(File(args.first).readAsStringSync());
-    if (decoded is! Map<String, dynamic> ||
-        decoded['trilhas'] is! List ||
-        decoded['favoritas'] is! List) {
-      throw FormatException('Esperados campos trilhas e favoritas em listas');
-    }
-    final rawTrails = decoded['trilhas'] as List;
-    final rawFavorites = decoded['favoritas'] as List;
-    if (rawFavorites.any((item) => item is! String)) {
-      throw FormatException('Favoritas precisam ser IDs de trilha');
-    }
-    final catalog = TrailCatalog(
-      rawTrails.map((input) => Trail.fromJson(input)).toList(),
-      favorites: rawFavorites.cast<String>().toSet(),
-    );
 
     double? maxKm;
     Difficulty? difficulty;
     bool onlyFavorites = false;
     int? availableMinutes;
     double? speedKmH;
+    String? favoriteToAdd;
+    String? favoriteToRemove;
+    String? destination;
     final seen = <String>{};
 
     for (final arg in args.skip(1)) {
       final option = arg.split('=').first;
-      if (!seen.add(option)) throw FormatException('Opcao duplicada: $option');
+      if (!seen.add(option)) {
+        throw FormatException('Opcao duplicada: $option');
+      }
       if (arg.startsWith('--max=')) {
         maxKm = double.parse(arg.substring('--max='.length));
       } else if (arg.startsWith('--dificuldade=')) {
@@ -50,6 +43,15 @@ void main(List<String> args) {
         availableMinutes = int.parse(arg.substring('--minutos='.length));
       } else if (arg.startsWith('--ritmo=')) {
         speedKmH = double.parse(arg.substring('--ritmo='.length));
+      } else if (arg.startsWith('--favoritar=')) {
+        favoriteToAdd = arg.substring('--favoritar='.length);
+      } else if (arg.startsWith('--desfavoritar=')) {
+        favoriteToRemove = arg.substring('--desfavoritar='.length);
+      } else if (arg.startsWith('--salvar=')) {
+        destination = arg.substring('--salvar='.length);
+        if (destination.isEmpty) {
+          throw FormatException('Informe um arquivo de saida');
+        }
       } else {
         throw FormatException('Parametro desconhecido: $arg');
       }
@@ -58,20 +60,45 @@ void main(List<String> args) {
     if (speedKmH != null && availableMinutes == null) {
       throw FormatException('--ritmo exige --minutos');
     }
+    if (favoriteToAdd != null && favoriteToRemove != null) {
+      throw FormatException('Escolha somente uma alteracao de favorito');
+    }
+    final changingFavorite = favoriteToAdd != null || favoriteToRemove != null;
+    if (changingFavorite != (destination != null)) {
+      throw FormatException('Alterar favorito exige --salvar=novo.json, e vice-versa');
+    }
+
+    final source = File(args.first);
+    var catalog = TrailCatalogStorage.load(source);
+    if (favoriteToAdd != null) {
+      catalog = catalog.withFavorite(favoriteToAdd, true);
+    } else if (favoriteToRemove != null) {
+      catalog = catalog.withFavorite(favoriteToRemove, false);
+    }
+
     final output = availableMinutes == null
-      ? catalog.report(
-          maxKilometers: maxKm,
-          difficulty: difficulty,
-          favoritesOnly: onlyFavorites,
-        )
-      : TrailTimePlanner.report(
-          catalog,
-          availableMinutes: availableMinutes,
-          speedKmH: speedKmH ?? 4,
-          maxKilometers: maxKm,
-          difficulty: difficulty,
-          favoritesOnly: onlyFavorites,
-        );
+        ? catalog.report(
+            maxKilometers: maxKm,
+            difficulty: difficulty,
+            favoritesOnly: onlyFavorites,
+          )
+        : TrailTimePlanner.report(
+            catalog,
+            availableMinutes: availableMinutes,
+            speedKmH: speedKmH ?? 4,
+            maxKilometers: maxKm,
+            difficulty: difficulty,
+            favoritesOnly: onlyFavorites,
+          );
+
+    if (destination != null) {
+      final file = File(destination);
+      if (file.absolute.path == source.absolute.path) {
+        throw FormatException('Use arquivo de saida diferente do catalogo original');
+      }
+      TrailCatalogStorage.saveNew(file, catalog);
+      stderr.writeln('Catalogo salvo: ${file.path}');
+    }
     stdout.writeln(output);
   } on FormatException catch (error) {
     stderr.writeln('Erro: $error');
