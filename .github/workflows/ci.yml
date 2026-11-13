@@ -1,0 +1,21 @@
+name: Testar catálogo de trilhas
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dart-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: '3.5.4'
+      - run: dart analyze lib bin
+      - run: dart run bin/main.dart --self-test
