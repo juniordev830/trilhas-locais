@@ -50,3 +50,15 @@ Ainda não há comandos de execução. Eles serão adicionados quando existir um
 ## Documentação técnica
 
 Confira o [roteiro de validação e próximos incrementos](docs/PRIMEIRO_INCREMENTO.md) para revisar a implementação e os critérios de qualidade antes de mudanças futuras.
+
+## Primeiro incremento executável (em revisão)
+
+O catálogo em Dart permite cadastrar trilhas fictícias, filtrar por distância e dificuldade, marcar favoritos e exportar/importar um backup JSON. Não utiliza GPS nem dados de localização. **Não há ainda interface Flutter**.
+
+```bash
+dart run bin/main.dart
+dart run bin/main.dart 5 facil
+dart run bin/main.dart --self-test
+```
+
+As trilhas de exemplo são inventadas e não representam rotas reais. Testes e análise estática são executados pelo GitHub Actions do PR.
