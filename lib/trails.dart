@@ -25,6 +25,8 @@ class Trail {
 }
 
 class TrailCatalog {
+  TrailCatalog();
+
   final Map<String, Trail> _trails = {};
   final Set<String> _favorites = {};
 
