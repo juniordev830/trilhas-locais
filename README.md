@@ -1,59 +1,19 @@
 # Trilhas Locais
 
-> Status: concepção. Este repositório contém apenas o escopo inicial; ainda não há aplicação executável ou funcionalidades implementadas.
+Catálogo local de percursos em Dart, com filtros, favoritos e exportação JSON. O núcleo e a demonstração no terminal estão implementados. A interface Flutter continua planejada.
 
-## Ideia
+## Recursos implementados
 
-Catalogar percursos de caminhada com distância, dificuldade e observações.
+- Cadastro manual de trilhas com identificador, nome, distância, dificuldade e observações.
+- Filtros por distância máxima e dificuldade: `facil`, `moderada` ou `dificil`.
+- Ordenação por distância e identificador para desempate.
+- Marcação e remoção de favoritos pela biblioteca.
+- Exportação e restauração de catálogo JSON com favoritos.
+- Rejeição de identificadores duplicados, distâncias inválidas e backups incompatíveis.
 
-## Primeira versão planejada
+## Executar
 
-- [ ] Cadastrar percurso manualmente.
-- [ ] Filtrar por distância e dificuldade.
-- [ ] Salvar lista de percursos favoritos.
-
-## Modelo inicial
-
-Percurso e favorito.
-
-## Regras e limites
-
-Não coletar localização automaticamente; dados iniciais serão demonstrativos.
-
-Escopo mantido pequeno: sem pagamentos, integrações externas, infraestrutura de produção ou uso de dados pessoais reais nesta etapa.
-
-## Tecnologia proposta
-
-Dart + Flutter.
-
-A escolha é uma proposta para a futura implementação; nenhuma dependência foi instalada e a tecnologia ainda não foi implementada.
-
-## Critério de conclusão do primeiro incremento
-
-Um filtro de até 5 km deve excluir percursos acima dessa distância.
-
-## Próximos passos
-
-1. Revisar este escopo antes de começar a implementação.
-2. Preparar o ambiente mínimo da tecnologia escolhida.
-3. Implementar um fluxo completo e validar o critério acima.
-4. Documentar a execução e acrescentar exemplos demonstrativos.
-
-## Possíveis evoluções
-
-Depois de validar o fluxo principal, avaliar persistência, acessibilidade e uma interface mais completa conforme a plataforma. Evoluções não fazem parte da entrega atual.
-
-## Como executar
-
-Ainda não há comandos de execução. Eles serão adicionados quando existir uma primeira versão funcional.
-
-## Documentação técnica
-
-Confira o [roteiro de validação e próximos incrementos](docs/PRIMEIRO_INCREMENTO.md) para revisar a implementação e os critérios de qualidade antes de mudanças futuras.
-
-## Primeiro incremento executável (em revisão)
-
-O catálogo em Dart permite cadastrar trilhas fictícias, filtrar por distância e dificuldade, marcar favoritos e exportar/importar um backup JSON. Não utiliza GPS nem dados de localização. **Não há ainda interface Flutter**.
+Com o SDK Dart instalado, execute na raiz:
 
 ```bash
 dart run bin/main.dart
@@ -61,4 +21,31 @@ dart run bin/main.dart 5 facil
 dart run bin/main.dart --self-test
 ```
 
-As trilhas de exemplo são inventadas e não representam rotas reais. Testes e análise estática são executados pelo GitHub Actions do PR.
+A demonstração cadastra dois percursos fictícios: um fácil de 2,8 km e outro moderado de 6,4 km. O filtro `5 facil` retorna somente o primeiro. A saída é um array JSON.
+
+Os testes existentes verificam o filtro de 5 km, favoritos, restauração do backup e rejeição de IDs duplicados.
+
+## Biblioteca
+
+O código de domínio está em `lib/trails.dart`:
+
+```dart
+import 'lib/trails.dart';
+
+void main() {
+  final catalog = TrailCatalog();
+  catalog.add(Trail('exemplo', 'Percurso fictício', 3.5, 'facil'));
+  catalog.favorite('exemplo');
+  final backup = catalog.exportJson();
+  final restored = TrailCatalog.fromJson(backup);
+  print(restored.favorites().single.name);
+}
+```
+
+## Limites
+
+Os dados ficam em memória. A exportação devolve texto JSON; não grava arquivos automaticamente. A demonstração reinicia o catálogo a cada execução e não oferece edição persistente. Não há interface Flutter, GPS, mapas ou coleta automática de localização.
+
+Os percursos de exemplo são inventados e não devem ser usados para navegação. O catálogo valida distâncias maiores que zero e de até 1.000 km. Esses limites técnicos não avaliam a segurança de um percurso.
+
+O [roteiro do primeiro incremento](docs/PRIMEIRO_INCREMENTO.md) preserva os requisitos de planejamento. A lista acima descreve o que já está implementado.
