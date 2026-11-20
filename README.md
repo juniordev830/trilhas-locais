@@ -1,51 +1,66 @@
 # Trilhas Locais
 
-Catálogo local de percursos em Dart, com filtros, favoritos e exportação JSON. O núcleo e a demonstração no terminal estão implementados. A interface Flutter continua planejada.
+MVP demonstrativo em **Dart 3**, para catalogar percursos cadastrados manualmente, filtrando por distância, dificuldade e favoritos — **sem coletar geolocalização**.
 
-## Recursos implementados
+## Funcionalidades
 
-- Cadastro manual de trilhas com identificador, nome, distância, dificuldade e observações.
-- Filtros por distância máxima e dificuldade: `facil`, `moderada` ou `dificil`.
-- Ordenação por distância e identificador para desempate.
-- Marcação e remoção de favoritos pela biblioteca.
-- Exportação e restauração de catálogo JSON com favoritos.
-- Rejeição de identificadores duplicados, distâncias inválidas e backups incompatíveis.
+- Cadastrar percursos no catálogo JSON (ID, nome, distância, dificuldade e observações).
+- Validar nomes, IDs e distâncias positivas e finitas.
+- Filtrar até a distância máxima informada e por dificuldade (`facil`, `moderada`, `dificil`).
+- Gerenciar favoritos com estado imutável e exportar um catálogo JSON atualizado para **novo arquivo**, sem sobrescrever o original.
+- Ordenar resultados por distância e nome.
+- Testar que filtro de até 5 km exclui percurso de 7,2 km.
 
 ## Executar
 
-Com o SDK Dart instalado, execute na raiz:
+Requer SDK Dart 3.3 ou superior:
 
 ```bash
-dart run bin/main.dart
-dart run bin/main.dart 5 facil
-dart run bin/main.dart --self-test
+dart pub get
+dart analyze
+dart run test/catalog_test.dart
+dart run test/pace_test.dart
+dart run test/storage_test.dart
+dart run bin/trilhas.dart examples/trilhas.json --max=5
+dart run bin/trilhas.dart examples/trilhas.json --max=5 --dificuldade=facil --favoritas
 ```
 
-A demonstração cadastra dois percursos fictícios: um fácil de 2,8 km e outro moderado de 6,4 km. O filtro `5 facil` retorna somente o primeiro. A saída é um array JSON.
+O arquivo `examples/trilhas.json` contém **percursos fictícios** sem latitude, longitude ou instruções de navegação. Não são recomendações reais para caminhada.
 
-Os testes existentes verificam o filtro de 5 km, favoritos, restauração do backup e rejeição de IDs duplicados.
+## Escopo atual
 
-## Biblioteca
+É um catálogo de domínio com CLI e testes, **com persistência local de favoritos por exportação de JSON**. Ainda não há Flutter, mapa ou sincronização automática. Não monitora a posição do usuário. Rotas reais, mapas offline e interface móvel acessível são evoluções futuras.
 
-O código de domínio está em `lib/trails.dart`:
 
-```dart
-import 'lib/trails.dart';
+## Planejador de tempo de caminhada
 
-void main() {
-  final catalog = TrailCatalog();
-  catalog.add(Trail('exemplo', 'Percurso fictício', 3.5, 'facil'));
-  catalog.favorite('exemplo');
-  final backup = catalog.exportJson();
-  final restored = TrailCatalog.fromJson(backup);
-  print(restored.favorites().single.name);
-}
+É possível combinar limite de tempo e ritmo médio estimado, além dos filtros existentes:
+
+```bash
+dart run test/pace_test.dart
+dart run bin/trilhas.dart examples/trilhas.json --minutos=90 --ritmo=4
+dart run bin/trilhas.dart examples/trilhas.json --minutos=90 --ritmo=5 --dificuldade=facil --favoritas
 ```
 
-## Limites
+O planejador calcula `ceil(distância_km / ritmo_km_h × 60)` minutos. Apenas percursos que cabem no tempo informado aparecem no resultado. O ritmo deve estar entre 1 e 12 km/h e o limite entre 1 e 720 minutos. As estimativas **não consideram elevação, terreno, clima, descanso, trânsito ou segurança**. Não são rotas reais nem orientações de navegação.
 
-Os dados ficam em memória. A exportação devolve texto JSON; não grava arquivos automaticamente. A demonstração reinicia o catálogo a cada execução e não oferece edição persistente. Não há interface Flutter, GPS, mapas ou coleta automática de localização.
+## Salvar favoritos localmente
 
-Os percursos de exemplo são inventados e não devem ser usados para navegação. O catálogo valida distâncias maiores que zero e de até 1.000 km. Esses limites técnicos não avaliam a segurança de um percurso.
+O comando de consulta não altera arquivos. Para incluir ou retirar um favorito, informe **um novo caminho de saída**. Isso preserva o arquivo original e permite usar o exportado em consultas futuras.
 
-O [roteiro do primeiro incremento](docs/PRIMEIRO_INCREMENTO.md) preserva os requisitos de planejamento. A lista acima descreve o que já está implementado.
+```bash
+dart run bin/trilhas.dart examples/trilhas.json --favoritar=trilha-demo --salvar=trilhas-atualizadas.json
+dart run bin/trilhas.dart trilhas-atualizadas.json --favoritas
+dart run bin/trilhas.dart trilhas-atualizadas.json --desfavoritar=parque-demo --salvar=trilhas-revisadas.json
+```
+
+O programa recusa sobrescrever arquivos existentes, inclusive o próprio catálogo de entrada. Também rejeita IDs de favoritos inexistentes, IDs repetidos no JSON, campos inválidos e arquivos de entrada acima de **1 MiB**. Não use catálogos pessoais como exemplos versionados no Git.
+
+A implementação persistente está isolada em `lib/persistent_trails.dart`, `lib/storage.dart` e `lib/pace.dart`; o núcleo legado de `lib/trails.dart` permanece compatível. Os testes do projeto podem ser executados com:
+
+```bash
+dart analyze --fatal-infos
+dart run test/catalog_test.dart
+dart run test/pace_test.dart
+dart run test/storage_test.dart
+```
