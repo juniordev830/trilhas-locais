@@ -1,0 +1,5 @@
+name: trilhas_locais
+description: Catalogo demonstrativo de trilhas manuais, sem geolocalizacao.
+version: 0.1.0
+environment:
+  sdk: ">=3.3.0 <4.0.0"
