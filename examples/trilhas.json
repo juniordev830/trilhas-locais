@@ -1,0 +1,40 @@
+{
+  "trilhas": [
+    {
+      "id": "trilha-01",
+      "nome": "Caminho da Serra (exemplo fictício)",
+      "distancia_km": 3.2,
+      "dificuldade": "facil",
+      "observacoes": "Registro demonstrativo; não representa rota real."
+    },
+    {
+      "id": "trilha-02",
+      "nome": "Rota do Mirante (exemplo fictício)",
+      "distancia_km": 5.4,
+      "dificuldade": "moderada",
+      "observacoes": "Distância e descrição são dados de teste."
+    },
+    {
+      "id": "trilha-03",
+      "nome": "Trilha das Dunas (exemplo fictício)",
+      "distancia_km": 8.7,
+      "dificuldade": "moderada",
+      "observacoes": "Não usar como orientação de navegação."
+    },
+    {
+      "id": "trilha-04",
+      "nome": "Percurso da Mata (exemplo fictício)",
+      "distancia_km": 12.5,
+      "dificuldade": "dificil",
+      "observacoes": "Dados inventados para demonstrar filtros."
+    },
+    {
+      "id": "trilha-05",
+      "nome": "Circuito do Vale (exemplo fictício)",
+      "distancia_km": 2.1,
+      "dificuldade": "facil",
+      "observacoes": "Sem coordenadas ou pontos geográficos."
+    }
+  ],
+  "favoritas": ["trilha-01", "trilha-05"]
+}
