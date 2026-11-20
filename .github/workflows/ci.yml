@@ -11,11 +11,16 @@ permissions:
 jobs:
   dart-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: dart-lang/setup-dart@2286a0c042b44434fe26d292bbce8d34f7ec662b # v1
         with:
           sdk: '3.5.4'
-      - run: dart analyze lib bin
+      - run: dart pub get
+      - run: dart format --set-exit-if-changed lib bin test
+      - run: dart analyze --fatal-infos lib bin test
+      - run: dart test
       - run: dart run bin/main.dart --self-test
+      - run: dart run bin/trilhas.dart examples/trilhas.json --max=5
+      - run: dart run bin/trilhas.dart examples/trilhas.json --minutos=90 --ritmo=4
