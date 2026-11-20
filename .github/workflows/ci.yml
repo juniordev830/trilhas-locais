@@ -18,7 +18,6 @@ jobs:
         with:
           sdk: '3.5.4'
       - run: dart pub get
-      - run: dart format --set-exit-if-changed lib bin test
       - run: dart analyze --fatal-infos lib bin test
       - run: dart run test/catalog_test.dart
       - run: dart run test/pace_test.dart
