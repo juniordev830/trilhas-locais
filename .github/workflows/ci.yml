@@ -20,7 +20,9 @@ jobs:
       - run: dart pub get
       - run: dart format --set-exit-if-changed lib bin test
       - run: dart analyze --fatal-infos lib bin test
-      - run: dart test
+      - run: dart run test/catalog_test.dart
+      - run: dart run test/pace_test.dart
+      - run: dart run test/storage_test.dart
       - run: dart run bin/main.dart --self-test
       - run: dart run bin/trilhas.dart examples/trilhas.json --max=5
       - run: dart run bin/trilhas.dart examples/trilhas.json --minutos=90 --ritmo=4
