@@ -39,7 +39,7 @@ void main() {
   fails(() => Trail.fromJson({'id': 'x', 'nome': 'x', 'distancia_km': 2, 'dificuldade': 'invalida'}));
   check(marked.report(favoritesOnly: true).contains('"favorita": true'), 'relatorio preserva favorito');
   fails(() => Trail(
-    id: 'control', name: 'Trilha\\nFalsa', kilometers: 2, difficulty: Difficulty.facil,
+    id: 'control', name: 'Trilha\nFalsa', kilometers: 2, difficulty: Difficulty.facil,
   ));
   check(Trail(id: 'ok', name: 'Trilha São José', kilometers: 2,
       difficulty: Difficulty.facil).name == 'Trilha São José', 'valid Portuguese title');
