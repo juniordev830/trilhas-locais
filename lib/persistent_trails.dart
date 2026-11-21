@@ -67,6 +67,9 @@ class TrailCatalog {
   TrailCatalog(List<Trail> source, {Set<String>? favorites})
       : trails = List.unmodifiable(source),
         favorites = Set.unmodifiable(favorites ?? <String>{}) {
+    if (trails.length > 10000) {
+      throw ArgumentError('Limite de 10000 trilhas excedido');
+    }
     if (trails.map((trail) => trail.id).toSet().length != trails.length) {
       throw ArgumentError('ID de trilha duplicado');
     }
@@ -94,7 +97,7 @@ class TrailCatalog {
     bool favoritesOnly = false,
   }) {
     if (maxKilometers != null &&
-        (!maxKilometers.isFinite || maxKilometers <= 0)) {
+        (!maxKilometers.isFinite || maxKilometers <= 0 || maxKilometers > 500)) {
       throw ArgumentError('Distancia maxima invalida');
     }
     final filtered = trails.where((trail) =>
