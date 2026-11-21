@@ -19,7 +19,8 @@ class Trail {
     if (!RegExp(r'^[a-z0-9-]{1,60}$').hasMatch(id)) {
       throw ArgumentError('ID da trilha invalido');
     }
-    if (name.trim().isEmpty || name.length > 120) {
+    if (name.trim().isEmpty || name.length > 120 ||
+        RegExp(r'[\x00-\x1F\x7F]').hasMatch(name)) {
       throw ArgumentError('Nome invalido');
     }
     if (!kilometers.isFinite || kilometers <= 0 || kilometers > 500) {
