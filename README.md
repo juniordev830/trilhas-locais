@@ -64,3 +64,5 @@ dart run test/catalog_test.dart
 dart run test/pace_test.dart
 dart run test/storage_test.dart
 ```
+
+O catálogo persistente aceita até 10.000 trilhas e distâncias máximas de consulta de até 500 km, coerentes com o limite dos registros. Nomes de trilhas rejeitam caracteres de controle (quebras de linha, tabulações e sequências ANSI), mantendo acentos portugueses válidos.
