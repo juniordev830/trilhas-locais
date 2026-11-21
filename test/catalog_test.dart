@@ -44,5 +44,13 @@ void main() {
   check(Trail(id: 'ok', name: 'Trilha São José', kilometers: 2,
       difficulty: Difficulty.facil).name == 'Trilha São José', 'valid Portuguese title');
 
+  fails(() => catalog.find(maxKilometers: 501));
+  final many = List.generate(10001, (index) => Trail(
+    id: 'trail-$index', name: 'Trilha $index', kilometers: 1,
+    difficulty: Difficulty.facil,
+  ));
+  fails(() => TrailCatalog(many));
+  check(catalog.find(maxKilometers: 500).length == 3, 'max boundary');
+
   print('PASS: distance, difficulty, favorites, ordering, validation and JSON report');
 }
