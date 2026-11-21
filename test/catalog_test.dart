@@ -38,5 +38,19 @@ void main() {
   fails(() => Trail(id: 'x', name: 'Ruim', kilometers: double.nan, difficulty: Difficulty.facil));
   fails(() => Trail.fromJson({'id': 'x', 'nome': 'x', 'distancia_km': 2, 'dificuldade': 'invalida'}));
   check(marked.report(favoritesOnly: true).contains('"favorita": true'), 'relatorio preserva favorito');
+  fails(() => Trail(
+    id: 'control', name: 'Trilha\nFalsa', kilometers: 2, difficulty: Difficulty.facil,
+  ));
+  check(Trail(id: 'ok', name: 'Trilha São José', kilometers: 2,
+      difficulty: Difficulty.facil).name == 'Trilha São José', 'valid Portuguese title');
+
+  fails(() => catalog.find(maxKilometers: 501));
+  final many = List.generate(10001, (index) => Trail(
+    id: 'trail-$index', name: 'Trilha $index', kilometers: 1,
+    difficulty: Difficulty.facil,
+  ));
+  fails(() => TrailCatalog(many));
+  check(catalog.find(maxKilometers: 500).length == 3, 'max boundary');
+
   print('PASS: distance, difficulty, favorites, ordering, validation and JSON report');
 }
